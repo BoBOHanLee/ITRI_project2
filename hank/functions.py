@@ -86,17 +86,21 @@ def draw(contours,img_color):
          i+=1
 
 
-# find 4 end points
+# find 4 end points  and
+    num_roi=0
+
     for cnt in contours:
          area = cv2.contourArea(cnt)
-         approx = cv2.approxPolyDP(cnt, 10, True)
-         hull = cv2.convexHull(cnt)
+         approx = cv2.approxPolyDP(cnt, 8, True)
+         #hull = cv2.convexHull(cnt)
          #print(approx)
          #print(np.shape(approx))
-         if area>120:
+         if area>120 and np.shape(approx)[0]==4:
+          num_roi+=1
           for i in range(np.shape(approx)[0]):
              cv2.circle(img_color, (approx[i][0][0], approx[i][0][1]), 1, [0, 255, 0],2)
-             #print(approx[i][0][:])
+    print(num_roi)
+
 
 
 
@@ -106,13 +110,16 @@ def find_roi_coordinate(contours,img_color):
     i = 0
     for cnt in contours:
         mask = np.zeros(img_color.shape, np.uint8)
-        pixelpoints = np.transpose(np.nonzero(mask))
-        y = np.reshape(pixelpoints[:, 0], (len(pixelpoints[:, 0]), 1))
-        x = np.reshape(pixelpoints[:, 1], (len(pixelpoints[:, 1]), 1))
-        index = np.full(x.shape, i)
-        pixelpoints = np.hstack((x, y, index))
-        df_points = pd.DataFrame(pixelpoints, columns=['x', 'y', 'i'])
-        df = df.append(df_points)
-        i += 1
+        area = cv2.contourArea(cnt)
+        if area>120:
+          cv2.drawContours(mask, [cnt], 0, 255, -1)
+          pixelpoints = np.transpose(np.nonzero(mask))
+          y = np.reshape(pixelpoints[:, 0], (len(pixelpoints[:, 0]), 1))
+          x = np.reshape(pixelpoints[:, 1], (len(pixelpoints[:, 1]), 1))
+          index = np.full(x.shape, i)
+          pixelpoints = np.hstack((x, y, index))
+          df_points = pd.DataFrame(pixelpoints, columns=['x', 'y', 'i'])
+          df = df.append(df_points)
+          i += 1
     #print(df)
     df.to_csv("coordinate_auto.csv")
