@@ -83,7 +83,22 @@ def draw(contours,img_color):
         area = cv2.contourArea(cnt)
         if area>120:
          cv2.putText(img_color, str(i), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
-         i += 1
+         i+=1
+
+
+# find 4 end points
+    for cnt in contours:
+         area = cv2.contourArea(cnt)
+         approx = cv2.approxPolyDP(cnt, 10, True)
+         hull = cv2.convexHull(cnt)
+         #print(approx)
+         #print(np.shape(approx))
+         if area>120:
+          for i in range(np.shape(approx)[0]):
+             cv2.circle(img_color, (approx[i][0][0], approx[i][0][1]), 1, [0, 255, 0],2)
+             #print(approx[i][0][:])
+
+
 
 
 def find_roi_coordinate(contours,img_color):

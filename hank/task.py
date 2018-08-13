@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import functions_auto as fn
+import functions as fn
 img1 =cv2.imread('normal.jpg',0)
 
 # I take off : manually adjust thresh and find initial roi
