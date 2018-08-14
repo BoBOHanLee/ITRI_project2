@@ -1,11 +1,11 @@
 import cv2
 import numpy as np
-import functions as fn
+import hank.functions.functions as fn
+
 img1 =cv2.imread('normal.jpg',0)
 
 # I take off : manually adjust thresh and find initial roi
 #however , contrast and morphology all are used by hands
-
 
 #thresh
 thresh=fn.Inhence_and_threshod(img1)
@@ -21,7 +21,6 @@ mor_show = cv2.cvtColor(mor, cv2.COLOR_GRAY2BGR)
 
 #draw the bine roi
 fn.draw(contours,img_show)
-fn.find_roi_coordinate(contours,img_show)
 
 
 
