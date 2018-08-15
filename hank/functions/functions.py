@@ -25,7 +25,7 @@ def Inhence_and_threshod(img):
 
 def inner_fill(th):
     # 接滿
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (4, 1))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 1))
     mor = cv2.dilate(th, kernel)
 
 
@@ -39,7 +39,9 @@ def inner_fill(th):
     mor = cv2.erode(mor, kernel)
 
     #opening
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     mor = cv2.morphologyEx(mor, cv2.MORPH_OPEN, kernel)
+
 
 
 
