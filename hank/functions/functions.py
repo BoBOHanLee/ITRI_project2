@@ -147,7 +147,7 @@ def draw(contours,img_color):
 
 
     print("找到%d個有效椎骨的座標"%num_roi)
-    print(df)
+    #print(df)
     df.to_csv("coordinate_forAllContours_points.csv")
 
 
