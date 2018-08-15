@@ -7,8 +7,8 @@ def sobel(img):
     y = cv2.Sobel(img,cv2.CV_16S,0,1)
     absX = cv2.convertScaleAbs(x) 
     absY = cv2.convertScaleAbs(y)
-    #dst = cv2.addWeighted(absX,0.5,absY,0.5,0)
-    dst = cv2.bitwise_and(absX,absY)
+    dst = cv2.addWeighted(absX,0.5,absY,0.5,0)
+    #dst = cv2.bitwise_and(absX,absY)
     return dst
 
 def enhance(img):
@@ -18,7 +18,7 @@ def enhance(img):
     #gaussianblur
     blur = cv2.GaussianBlur(sharpen,(5,5),0)
     return blur
-
+    
 def filling_hole_tl(img):
     im_floodfill = img.copy()
     # Mask used to flood filling.
