@@ -47,6 +47,27 @@ def inner_fill(th):
 
 
 
+
+def endpoint_attribution(cx,cy,endpoints):   # Get 4 end points's position
+    position=[]
+
+    for i in range(4):
+     if endpoints[i][0]>cx and endpoints[i][1]>cy:
+          position=np.append(position,'right down')
+     elif endpoints[i][0]>cx and endpoints[i][1]<cy:
+         position = np.append(position, 'right up')
+     elif endpoints[i][0]<cx and endpoints[i][1]<cy:
+         position = np.append(position, 'left up')
+     else:
+         position = np.append(position, 'left down')
+
+    df = pd.DataFrame(position, columns=['endpoint_position'])
+    return df
+
+
+
+
+
 def draw(contours,img_color):
 
 
@@ -68,29 +89,36 @@ def draw(contours,img_color):
 
 
     #  bone number
-    # find 4 end points  and
-    centroid_x = []
-    centroid_y = []
+    # find 4 end points  and other features
+
     num_roi = 0  # the num of effective bone's 4 end points
-    df = pd.DataFrame()
+    df=pd.DataFrame()  #final output
     for cnt in contours:
+        #end poont
+        endpoints = np.zeros((4, 2), dtype=np.int32)
+
+
         #area and approx
         area = cv2.contourArea(cnt)
         approx = cv2.approxPolyDP(cnt, 8, True)
-        # centroid
-        M = cv2.moments(cnt)
-        if M['m00']==0 :
-            continue
-        cx = int(M['m10'] / M['m00'])
-        cy = int(M['m01'] / M['m00'])
-        centroid_x = np.append(centroid_x, cx)
-        centroid_y = np.append(centroid_y, cy)
 
+        # pirimeter
+        perimeter = cv2.arcLength(cnt, True)
 
         # get data  for pd
         if area>120 and np.shape(approx)[0]==4:
+         # centroid
+         M = cv2.moments(cnt)
+         if M['m00'] == 0:
+                continue
+         cx = int(M['m10'] / M['m00'])
+         cy = int(M['m01'] / M['m00'])
          cv2.putText(img_color, str(num_roi+1), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
          num_roi += 1
+
+
+
+
 
          #get all the contours's points
          mask=np.zeros(img_color.shape,np.uint8)
@@ -99,15 +127,23 @@ def draw(contours,img_color):
          y = np.reshape(contourPoints[:, 0], (len(contourPoints[:, 0]), 1))
          x = np.reshape(contourPoints[:, 1], (len(contourPoints[:, 1]), 1))
          index = np.full(x.shape, num_roi)
-
          pixelpoints = np.hstack((index,x,y))
          df_points = pd.DataFrame(pixelpoints,columns=['index','x', 'y'])
-         df=df.append(df_points)
+
 
          # get all the end points
          for i in range(np.shape(approx)[0]):
              cv2.circle(img_color, (approx[i][0][0], approx[i][0][1]), 1, [0, 255, 0], 2)
+             endpoints[i][0]=approx[i][0][0]
+             endpoints[i][1]=approx[i][0][1]
 
+
+
+         #panda
+         df_feature=pd.DataFrame({'cx':[cx],'cy':[cy],'area':[area],'perimeter':[perimeter]})
+         df_endpoints=pd.DataFrame(endpoints,columns=['endpoint_x','endpoint_y'])
+         df_all = pd.concat([df_points, df_endpoints, endpoint_attribution(cx, cy, endpoints),df_feature], 1)  #combine in x-direction
+         df = df.append(df_all)         #combine in y-direction
 
 
     print("找到%d個有效椎骨的座標"%num_roi)
