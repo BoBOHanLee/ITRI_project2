@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import hank.functions.functions as fn
 
+
 img1 =cv2.imread('normal.jpg',0)
 
 # I take off : manually adjust thresh and find initial roi
