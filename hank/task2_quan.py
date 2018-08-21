@@ -1,12 +1,9 @@
 import cv2
 import numpy as np
 import hank.functions.functions2 as fn2
-from sklearn.cluster import MiniBatchKMeans
 
 
-
-color_num=3
-image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/06599357_20171022_MR_3_7_7.jpg")
+image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/1.jpg")
 image_inh=fn2.Inhence(image)
 #quant=fn2.Quanlification(image,color_num)    #This photo doesnt fit quant algorithm
 th=fn2.threshold(image_inh)
