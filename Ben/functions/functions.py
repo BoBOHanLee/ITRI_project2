@@ -138,7 +138,8 @@ def endpoint(contours,img):
         rect_area=rect[1][0]*rect[1][1]
         rel_area=area/img_size
         extent=area/rect_area
-        if(rel_area > 1/20 or rel_area < 1/200 or extent < 0.7):
+        aspect_ratio=rect[1][0]/rect[1][1]
+        if(rel_area > 1/20 or rel_area < 1/200 or extent < 0.6 or aspect_ratio > 1.5 or aspect_ratio < 0.5):
             continue
         #initialize end points
         num_roi += 1
