@@ -21,14 +21,6 @@ def roi(img):
     img=cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
     #draw,features and endpoint
     fc.draw(contours,img)
-    '''
-    roi = cv2.drawContours(img, contours, -1, (0,0,255), 1)
-    #get features and draw
-    df=fc.features(roi,contours)
-    print(df)
-    #get coordinate
-    fc.coordinate(roi,contours)
-    '''
     #stacking images side-by-side
     opening=cv2.cvtColor(opening,cv2.COLOR_GRAY2BGR)
     roi=np.hstack((opening,img))
