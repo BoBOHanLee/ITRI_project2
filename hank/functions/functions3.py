@@ -31,8 +31,8 @@ def Quanlification(img,color_num):
 
     # convert from L*a*b* to RGB
     quant = cv2.cvtColor(quant, cv2.COLOR_LAB2BGR)
-    result=middle_color(quant)
-    return  result
+
+    return  quant
 
 def Inhence(img):
     img=cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
@@ -73,11 +73,11 @@ def middle_color(cq_img):    #效果還好
 def threshold(img):
 
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
+    __, th = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-    '''
-    im_floodfill = img.copy()
+    im_floodfill = th.copy()
 
-    kernel=cv2.getStructuringElement(cv2.MORPH_RECT,(7,7))
+    kernel=cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
     mor=cv2.morphologyEx(im_floodfill,cv2.MORPH_OPEN,kernel)
     # Mask used to flood filling.
     # Notice the size needs to be 2 pixels than the image.
@@ -89,14 +89,14 @@ def threshold(img):
     im_floodfill_inv = cv2.bitwise_not(im_floodfill)
     # Combine the two images to get the foreground.
     mor = img | im_floodfill_inv
+
+
     '''
-
-
     kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (6, 6))
     kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     mor = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel1, iterations=1)
     mor = cv2.morphologyEx(mor, cv2.MORPH_CLOSE, kernel2, iterations=1)
-
+    '''
 
 
     mor = cv2.cvtColor(mor, cv2.COLOR_GRAY2BGR)
