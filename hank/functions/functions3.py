@@ -47,7 +47,7 @@ def Inhence(img):
     cl = cv2.filter2D(img, -1, kernel)
 
 
-    gaussian = cv2.cvtColor(cl, cv2.COLOR_GRAY2BGR)
+    gaussian = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
 
 
@@ -92,10 +92,12 @@ def threshold(img):
     '''
 
 
-    kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (6, 6))
+    kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-    mor = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel1, iterations=1)
-    mor = cv2.morphologyEx(mor, cv2.MORPH_CLOSE, kernel2, iterations=1)
+    #mor = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel1, iterations=3)
+    #mor = cv2.morphologyEx(mor, cv2.MORPH_CLOSE, kernel2, iterations=1)
+    mor=cv2.erode(img,kernel1,iterations=3)
+    mor = cv2.dilate(mor, kernel1, iterations=2)
 
 
 
@@ -129,6 +131,8 @@ def draw(contours,img_color):
 
     #  bone number
     # find 4 end points  and other features
+
+    global num_roi
 
     num_roi = 0  # the num of effective bone's 4 end points
     df=pd.DataFrame()  #final output
@@ -187,8 +191,7 @@ def draw(contours,img_color):
          df_all = pd.concat([df_points, df_endpoints, endpoint_attribution(cx, cy, endpoints),df_feature], 1)  #combine in x-direction
          df = df.append(df_all)         #combine in y-direction
 
-
-    print("找到%d個有效椎骨的座標"%num_roi)
+    print("找到%d個有效椎骨的座標" % num_roi)
     #print(df)
     df.to_csv("coordinate_forAllContours_points.csv")
     return img_color2
