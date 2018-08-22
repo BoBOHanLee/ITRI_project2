@@ -43,7 +43,7 @@ def Inhence(img):
     # Contrast Limited Adaptive Histogram Equalization
     clahe = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(20, 20))
     cl = clahe.apply(img)
-
+    #cl=cv2.equalizeHist(img)
 
     # lowpass filter
     gaussian = cv2.GaussianBlur(cl, (5,5), 1)
@@ -128,6 +128,7 @@ def draw(contours,img_color):
 
         #area and approx
         area = cv2.contourArea(cnt)
+
         approx = cv2.approxPolyDP(cnt, 42.5, True)
 
         # pirimeter

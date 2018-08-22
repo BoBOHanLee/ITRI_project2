@@ -39,7 +39,7 @@ def Inhence(img):
 
     img = cv2.GaussianBlur(img, (3, 3), 1)
     # Contrast Limited Adaptive Histogram Equalization
-    #clahe = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(40, 40))
+    #clahe = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(40, 40))
     #cl = clahe.apply(img)
     cl = cv2.equalizeHist(img)
     kernel=np.array([[0,-1,0],[-1,5,-1],[0,-1,0]])
