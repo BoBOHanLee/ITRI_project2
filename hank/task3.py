@@ -2,7 +2,13 @@ import cv2
 import numpy as np
 import hank.functions.functions3 as fn
 
-image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/10.jpg")
+#1,3,6_d  are  too dark  ,need to be solved
+
+image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/6.jpg")
+
+if np.shape(image)[0]!=512 and np.shape(image)[1]!=512 :   #photo's shape must be 512x512
+    image = cv2.resize(image, (512, 512))
+
 image_in=fn.Inhence(image)
 image_quan=fn.Quanlification(image_in,3)
 image_thresh=fn.threshold(image_quan)

@@ -31,16 +31,18 @@ def Quanlification(img,color_num):
 
     # convert from L*a*b* to RGB
     quant = cv2.cvtColor(quant, cv2.COLOR_LAB2BGR)
-    return  quant
+    result=middle_color(quant)
+    return  result
 
 def Inhence(img):
     img=cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 
 
     img = cv2.GaussianBlur(img, (3, 3), 1)
+    #img = np.uint8(np.clip((1.27 * img), 0, 255))
     # Contrast Limited Adaptive Histogram Equalization
 
-    #cl = cv2.equalizeHist(img)   #photo 3 is too dark ,so need to use it
+    #img = cv2.equalizeHist(img)   #photo 3 is too dark ,so need to use it
     kernel=np.array([[0,-1,0],[-1,5,-1],[0,-1,0]])
     cl = cv2.filter2D(img, -1, kernel)
 
@@ -52,16 +54,49 @@ def Inhence(img):
     return gaussian
 
 
+def middle_color(cq_img):    #效果還好
+    img = cv2.cvtColor(cq_img, cv2.COLOR_BGRA2GRAY)
+    maxv=np.amax(img)
+    minv=np.amin(img)
+    roi=np.empty(img.shape,img.dtype)
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            if(img[i,j]!=maxv and img[i,j]!=minv):
+               roi[i,j]=255
+
+    roi=cv2.cvtColor(roi,cv2.COLOR_GRAY2BGR)
+    return roi
+
+
+
+
 def threshold(img):
-    # THRESH
+
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
-    __, th = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-    # floodfill external's area
+    '''
+    im_floodfill = img.copy()
+
+    kernel=cv2.getStructuringElement(cv2.MORPH_RECT,(7,7))
+    mor=cv2.morphologyEx(im_floodfill,cv2.MORPH_OPEN,kernel)
+    # Mask used to flood filling.
+    # Notice the size needs to be 2 pixels than the image.
+    h, w = img.shape[:2]
+    mask = np.zeros((h + 2, w + 2), np.uint8)
+    # Floodfill from point (0, 0)
+    cv2.floodFill(mor, mask, (0, 0), 255)
+    # Invert floodfilled image
+    im_floodfill_inv = cv2.bitwise_not(im_floodfill)
+    # Combine the two images to get the foreground.
+    mor = img | im_floodfill_inv
+    '''
 
 
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 6))
-    mor = cv2.morphologyEx(th, cv2.MORPH_OPEN, kernel, iterations=1)
+    kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (6, 6))
+    kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+    mor = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel1, iterations=1)
+    mor = cv2.morphologyEx(mor, cv2.MORPH_CLOSE, kernel2, iterations=1)
+
 
 
     mor = cv2.cvtColor(mor, cv2.COLOR_GRAY2BGR)
@@ -91,22 +126,6 @@ def endpoint_attribution(cx,cy,endpoints):   # Get 4 end points's position
 
 def draw(contours,img_color):
     img_color2 = img_color.copy()
-    # bone ROI
-    for i in range(0, len(contours)):
-
-
-        area = cv2.contourArea(contours[i])
-        x, y, w, h = cv2.boundingRect(contours[i])
-        aspect_ratio = float(w) / h
-        rect_area = w * h
-        extent = float(area) / rect_area
-
-
-        #delete error area
-        if area>100 and extent>0.5:
-           cv2.drawContours(img_color2, [contours[i]], -1, (0, 0, 255), 1)
-
-
 
     #  bone number
     # find 4 end points  and other features
@@ -127,6 +146,9 @@ def draw(contours,img_color):
 
         # get data  for pd
         if area>120 and np.shape(approx)[0]==4:
+
+
+         cv2.drawContours(img_color2, [cnt], -1, (0, 0, 255), 1)
          # centroid
          M = cv2.moments(cnt)
          if M['m00'] == 0:
