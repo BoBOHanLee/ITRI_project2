@@ -23,17 +23,17 @@ def roi(img):
     #stacking images side-by-side
     opening=cv2.cvtColor(opening,cv2.COLOR_GRAY2BGR)
     roi=np.hstack((opening,endpoint_img))
-    
+    '''
     #show
     cv2.imshow("blur",blur)
     cv2.imshow("cq",cq_img)
     cv2.imshow("binary",binary_img)
     cv2.imshow("endpoint",endpoint_img)
-    
+    '''
     return roi
 
 #main
-img1=cv2.imread("..\\training_img\\normal\\normal2.jpg")
+img1=cv2.imread("..\\training_img\\normal\\normal-lumbar-spine-mri-2 (4).jpg")
 roi_img1=roi(np.copy(img1))
 #stacking images side-by-side
 res=np.hstack((img1,roi_img1))
