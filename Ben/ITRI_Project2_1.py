@@ -33,10 +33,10 @@ def roi(img):
     return roi
 
 #main
-img1=cv2.imread("..\\training_img\\normal\\normal-lumbar-spine-mri-2 (4).jpg")
+img1=cv2.imread("..\\training_img\\normal\\normal-lumbar-spine-mri-2.jpg")
 roi_img1=roi(np.copy(img1))
 #stacking images side-by-side
 res=np.hstack((img1,roi_img1))
 cv2.imshow("result",res)
-cv2.imwrite("result2.jpg",res)
+cv2.imwrite("normal.jpg",res)
 cv2.waitKey(0)
