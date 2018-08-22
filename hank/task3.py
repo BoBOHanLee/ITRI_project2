@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import hank.functions.functions3 as fn
 
-image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/3.jpg")
+image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/10.jpg")
 image_in=fn.Inhence(image)
 image_quan=fn.Quanlification(image_in,3)
 image_thresh=fn.threshold(image_quan)

@@ -39,11 +39,10 @@ def Inhence(img):
 
     img = cv2.GaussianBlur(img, (3, 3), 1)
     # Contrast Limited Adaptive Histogram Equalization
-    #clahe = cv2.createCLAHE(clipLimit=5.0, tileGridSize=(40, 40))
-    #cl = clahe.apply(img)
-    cl = cv2.equalizeHist(img)
+
+    #cl = cv2.equalizeHist(img)   #photo 3 is too dark ,so need to use it
     kernel=np.array([[0,-1,0],[-1,5,-1],[0,-1,0]])
-    cl = cv2.filter2D(cl, -1, kernel)
+    cl = cv2.filter2D(img, -1, kernel)
 
 
     gaussian = cv2.cvtColor(cl, cv2.COLOR_GRAY2BGR)
@@ -104,8 +103,8 @@ def draw(contours,img_color):
 
 
         #delete error area
-        if area>100 and extent>0.7:
-           cv2.drawContours(img_color, [contours[i]], -1, (0, 0, 255), 1)
+        if area>100 and extent>0.5:
+           cv2.drawContours(img_color2, [contours[i]], -1, (0, 0, 255), 1)
 
 
 
