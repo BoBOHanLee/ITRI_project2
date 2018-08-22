@@ -123,62 +123,6 @@ def filling_hole_br(img):
     filled_img = img | im_floodfill_inv
     return filled_img
 
-def features(roi,contours):
-    index=[]
-    centroid_x=[]
-    centroid_y=[]
-    area=[]
-    perimeter=[]
-    aspect_ratio=[]
-    i=0
-    for cnt in contours:
-        #centroid
-        M=cv2.moments(cnt)
-        cx=int(M['m10']/M['m00'])
-        cy=int(M['m01']/M['m00'])
-        centroid_x=np.append(centroid_x,cx)
-        centroid_y=np.append(centroid_y,cy)
-        #area
-        area=np.append(area,cv2.contourArea(cnt))
-        #perimeter
-        perimeter=np.append(perimeter,cv2.arcLength(cnt,True))
-        #aspect ratio
-        x,y,w,h = cv2.boundingRect(cnt)
-        aspect_ratio=np.append(aspect_ratio,float(w)/h)
-        #index
-        index=np.append(index,i)
-        cv2.putText(roi,str(i),(cx,cy),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,255),1,cv2.LINE_AA)
-        i+=1
-
-    df = pd.DataFrame({"Index":index,
-    "Centroid_X":centroid_x,
-    "Centroid_Y:":centroid_y,
-    "Area":area,
-    "Perimeter":perimeter,
-    "Aspect_Ratio":aspect_ratio
-    })
-    df.to_csv("features.csv")
-    return df
-
-def coordinate(roi,contours):
-    df= pd.DataFrame()
-    i=0
-    for cnt in contours:
-        #get coordinate
-        mask = np.zeros(roi.shape,np.uint8)
-        cv2.drawContours(mask,[cnt],0,255,-1)
-        pixelpoints = np.transpose(np.nonzero(mask))
-        #create df
-        y=np.reshape(pixelpoints[:,0],(len(pixelpoints[:,0]),1))
-        x=np.reshape(pixelpoints[:,1],(len(pixelpoints[:,1]),1))
-        index=np.full(x.shape,i)
-        pixelpoints=np.hstack((x,y,index))
-        df_points=pd.DataFrame(pixelpoints,columns=['x','y','i'])
-        df=df.append(df_points)
-        i+=1
-    print(df)
-    df.to_csv("coordinate.csv")
-
 def endpoint(contours,img):
     img_color=np.copy(img)
     img_size=img.shape[0]*img.shape[1]
@@ -214,20 +158,33 @@ def endpoint(contours,img):
         cv2.putText(img_color, str(num_roi), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         for i in range(0,4):
             cv2.circle(img_color, (endpoints[i][0],endpoints[i][1]), 1, [0, 255, 0], 2)
-        #get all the contours's points
-        mask=np.zeros(img_color.shape,np.uint8)
-        cv2.drawContours(mask,[cnt],0,255,thickness=cv2.FILLED)
-        contourPoints=np.transpose(np.nonzero(mask))
-        y = np.reshape(contourPoints[:, 0], (len(contourPoints[:, 0]), 1))
-        x = np.reshape(contourPoints[:, 1], (len(contourPoints[:, 1]), 1))
-        index = np.full(x.shape, num_roi)
-        pixelpoints = np.hstack((index,x,y))
-        df_points = pd.DataFrame(pixelpoints,columns=['index','x', 'y'])
-        #panda
-        df_feature=pd.DataFrame({'cx':[cx],'cy':[cy],'area':[area],'perimeter':[cv2.arcLength(cnt,True)]})
-        df_endpoints=pd.DataFrame(endpoints,columns=['endpoint_x','endpoint_y'])
-        df_all = pd.concat([df_points, df_endpoints, endpoint_attribution(cx, cy, endpoints),df_feature], 1)  #combine in x-direction
-        df = df.append(df_all)         #combine in y-direction
+        #get all features
+        df=features(img_color,cnt,num_roi,endpoints,df)
 
     df.to_csv("all_features.csv")
     return img_color
+
+def features(img,cnt,num_roi,endpoints,df):
+    #features
+    M=cv2.moments(cnt)
+    cx=int(M['m10']/M['m00'])
+    cy=int(M['m01']/M['m00'])
+    area=cv2.contourArea(cnt)
+    perimeter=cv2.arcLength(cnt,True)
+    #get all the contours's points
+    mask=np.zeros(img.shape,np.uint8)
+    cv2.drawContours(mask,[cnt],0,255,thickness=cv2.FILLED)
+    contourPoints=np.transpose(np.nonzero(mask))
+    y = np.reshape(contourPoints[:, 0], (len(contourPoints[:, 0]), 1))
+    x = np.reshape(contourPoints[:, 1], (len(contourPoints[:, 1]), 1))
+    index = np.full(x.shape, num_roi)
+    pixelpoints = np.hstack((index,x,y))
+    df_points = pd.DataFrame(pixelpoints,columns=['index','x', 'y'])
+    #panda
+    df_feature=pd.DataFrame({'cx':[cx],'cy':[cy],'area':[area],'perimeter':[perimeter]})
+    df_endpoints=pd.DataFrame(endpoints,columns=['endpoint_x','endpoint_y'])
+    #combine in x-direction
+    df_all = pd.concat([df_points, df_endpoints, endpoint_attribution(cx, cy, endpoints),df_feature], 1)
+    #combine in y-direction
+    df = df.append(df_all)        
+    return df

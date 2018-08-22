@@ -20,16 +20,16 @@ def roi(img):
     image, contours, hierarchy = cv2.findContours(opening,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     #draw,features and endpoint
     endpoint_img=fc.endpoint(contours,img)
-    
     #stacking images side-by-side
     opening=cv2.cvtColor(opening,cv2.COLOR_GRAY2BGR)
     roi=np.hstack((opening,endpoint_img))
-    '''
+    
     #show
+    cv2.imshow("blur",blur)
     cv2.imshow("cq",cq_img)
     cv2.imshow("binary",binary_img)
     cv2.imshow("endpoint",endpoint_img)
-    '''
+    
     return roi
 
 #main
