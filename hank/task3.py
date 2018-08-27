@@ -3,10 +3,10 @@ import numpy as np
 import hank.functions.functions3 as fn
 
 
-#f6 use floodfill will success
 
 
-image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/unnormal3.jpg")
+
+image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/unnormal_f4_dark.jpg")
 
 
 

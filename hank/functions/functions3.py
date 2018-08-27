@@ -91,18 +91,23 @@ def mor(img):
     mor = img | im_floodfill_inv
     '''
 
-
+    '''
     kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     #mor = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel1, iterations=3)
     #mor = cv2.morphologyEx(mor, cv2.MORPH_CLOSE, kernel2, iterations=1)
     mor=cv2.erode(img,kernel1,iterations=3)
 
-
-
-
     mor = cv2.dilate(mor, kernel1, iterations=2)
-
+    '''
+    kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+    mor = cv2.erode(img, kernel1, iterations=3)
+    # floodfill external's area
+    image1, contours, hierarchy = cv2.findContours(
+        mor, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cv2.drawContours(mor, contours, -1, (255, 255, 255), thickness=cv2.FILLED)
+    mor = cv2.dilate(mor, kernel1, iterations=3)
 
 
     mor = cv2.cvtColor(mor, cv2.COLOR_GRAY2BGR)
