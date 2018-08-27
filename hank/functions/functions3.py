@@ -38,7 +38,7 @@ def Inhence(img):
     img=cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 
 
-    img = cv2.GaussianBlur(img, (3, 3), 1)
+    #img = cv2.GaussianBlur(img, (3, 3), 1)
     #img = np.uint8(np.clip((1.27 * img), 0, 255))
     # Contrast Limited Adaptive Histogram Equalization
 
@@ -70,7 +70,7 @@ def middle_color(cq_img):    #效果還好
 
 
 
-def threshold(img):
+def mor(img):
 
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
 
@@ -97,6 +97,10 @@ def threshold(img):
     #mor = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel1, iterations=3)
     #mor = cv2.morphologyEx(mor, cv2.MORPH_CLOSE, kernel2, iterations=1)
     mor=cv2.erode(img,kernel1,iterations=3)
+
+
+
+
     mor = cv2.dilate(mor, kernel1, iterations=2)
 
 
@@ -193,7 +197,7 @@ def draw(contours,img_color):
 
     print("找到%d個有效椎骨的座標" % num_roi)
     #print(df)
-    df.to_csv("coordinate_forAllContours_points.csv")
+    df.to_csv("unnormal3.csv")
     return img_color2
 
 
