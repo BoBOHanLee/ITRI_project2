@@ -10,9 +10,9 @@
 ***
 ## 洪邦 :
 > minAreaRect(最小面積的Bounding Rect)找出四個端點
-![Alt text](Ben/result%20files/normal1_p.jpg)
-![Alt text](Ben/result%20files/normal2_p.jpg)
-![Alt text](Ben/result%20files/normal3_p.jpg)
-![Alt text](Ben/result%20files/normal4_p.jpg)
-![Alt text](Ben/result%20files/normal5_p.jpg)
-![Alt text](Ben/result%20files/normal6_p.jpg)
+![Alt text](Ben/result%20files/result1.jpg)
+![Alt text](Ben/result%20files/result2.jpg)
+![Alt text](Ben/result%20files/result3.jpg)
+![Alt text](Ben/result%20files/result4.jpg)
+![Alt text](Ben/result%20files/result5.jpg)
+![Alt text](Ben/result%20files/result6.jpg)
