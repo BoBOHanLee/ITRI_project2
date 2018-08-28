@@ -6,14 +6,13 @@ import hank.functions.functions3 as fn
 
 
 
-image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/unnormal_f4_dark.jpg")
-cv2.imwrite('unnormal3_before.jpg',image)
-
+image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/unnormal2.jpg")
 
 
 if np.shape(image)[0]!=512 and np.shape(image)[1]!=512 :   #photo's shape must be 512x512
     image = cv2.resize(image, (512, 512))
 
+cv2.imwrite('unnormal2_before.jpg',image)
 image_in=fn.Inhence(image)
 image_quan=fn.Quanlification(image_in,3)
 image_mor=fn.mor(image_quan)
