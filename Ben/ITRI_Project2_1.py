@@ -4,18 +4,14 @@ import cv2
 import functions.functions as fc
 import functions.color_quanlification as cq
 
-img=cv2.imread("..\\training_img\\normal\\normal3.png")
+img=cv2.imread("..\\training_img\\normal\\normal_f8.jpg")
+img=cv2.resize(img,(512,512),interpolation=cv2.INTER_CUBIC)
 #gaussianblur
 blur = cv2.GaussianBlur(img,(5,5),0)
 #color quanlification
 cq_img=cq.color_quanlification(blur)
 #get middle color
 binary_img=cq.middle_color(cq_img)
-'''
-#scaling
-img=cv2.resize(img,(512,512),interpolation=cv2.INTER_CUBIC)
-binary_img=cv2.resize(binary_img,(512,512),interpolation=cv2.INTER_CUBIC)
-'''
 #morphology
 kernel = np.ones((3,3),np.uint8)
 opening=cv2.erode(binary_img,kernel,iterations=3)
@@ -40,5 +36,6 @@ cv2.imshow("endpoint",endpoint_img)
 #stacking images side-by-side
 res=np.hstack((img,roi_img))
 cv2.imshow("result",res)
-cv2.imwrite("normal.jpg",res)
+cv2.imwrite("result.jpg",res)
+cv2.imwrite("normal.jpg",img)
 cv2.waitKey(0)
