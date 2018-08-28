@@ -7,7 +7,7 @@ import hank.functions.functions3 as fn
 
 
 image=cv2.imread("/Users/libohan/Documents/GitHub/ITRI_project2/training_img/unnormal/unnormal_f4_dark.jpg")
-
+cv2.imwrite('unnormal3_before.jpg',image)
 
 
 
