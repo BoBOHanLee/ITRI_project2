@@ -37,14 +37,15 @@ def Quanlification(img,color_num):
 def Inhence(img):
     img=cv2.cvtColor(img,cv2.COLOR_BGRA2GRAY)
 
-
     #img = cv2.GaussianBlur(img, (3, 3), 1)
-    #img = np.uint8(np.clip((1.27 * img), 0, 255))
-    # Contrast Limited Adaptive Histogram Equalization
 
-    #img = cv2.equalizeHist(img)   #photo 3 is too dark ,so need to use it
-    kernel=np.array([[0,-1,0],[-1,5,-1],[0,-1,0]])
-    cl = cv2.filter2D(img, -1, kernel)
+
+    #img = cv2.equalizeHist(img)
+   # img = np.uint8(np.clip((1.5 * img +10), 0, 255))
+
+
+    #gaussian = cv2.GaussianBlur(img, (2, 2), 1)
+
 
 
     gaussian = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
@@ -74,40 +75,30 @@ def mor(img):
 
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
 
-    '''
-    im_floodfill = img.copy()
 
-    kernel=cv2.getStructuringElement(cv2.MORPH_RECT,(7,7))
-    mor=cv2.morphologyEx(im_floodfill,cv2.MORPH_OPEN,kernel)
-    # Mask used to flood filling.
-    # Notice the size needs to be 2 pixels than the image.
-    h, w = img.shape[:2]
-    mask = np.zeros((h + 2, w + 2), np.uint8)
-    # Floodfill from point (0, 0)
-    cv2.floodFill(mor, mask, (0, 0), 255)
-    # Invert floodfilled image
-    im_floodfill_inv = cv2.bitwise_not(im_floodfill)
-    # Combine the two images to get the foreground.
-    mor = img | im_floodfill_inv
-    '''
 
-    '''
     kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-    #mor = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel1, iterations=3)
-    #mor = cv2.morphologyEx(mor, cv2.MORPH_CLOSE, kernel2, iterations=1)
-    mor=cv2.erode(img,kernel1,iterations=3)
 
-    mor = cv2.dilate(mor, kernel1, iterations=2)
-    '''
-    kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-    mor = cv2.erode(img, kernel1, iterations=3)
+    mor = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel2, iterations=2)
+
+
     # floodfill external's area
     image1, contours, hierarchy = cv2.findContours(
-        mor, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    cv2.drawContours(mor, contours, -1, (255, 255, 255), thickness=cv2.FILLED)
+        mor, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+
+
+    for i in range(0,len(contours)):
+       if hierarchy[0][i][3] != -1 :   #it has not parent contour
+           draw=[]
+           draw.append(contours[i])
+           cv2.drawContours(mor, draw, -1, (255, 255, 255), thickness=cv2.FILLED)
+
+
+
+    mor = cv2.erode(mor, kernel1, iterations=3)
     mor = cv2.dilate(mor, kernel1, iterations=3)
+
 
 
     mor = cv2.cvtColor(mor, cv2.COLOR_GRAY2BGR)
@@ -202,7 +193,7 @@ def draw(contours,img_color):
 
     print("找到%d個有效椎骨的座標" % num_roi)
     #print(df)
-    df.to_csv("unnormal3.csv")
+    df.to_csv("normal9.csv")
     return img_color2
 
 
